@@ -1,0 +1,39 @@
+
+
+            <!-- Central Modal Medium Info -->
+            <div class="modal fade" id="centralModalInfo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-notify modal-info" role="document" style="max-width: 70%!important">
+              <!--Content-->
+              <div class="modal-content">
+                <!--Header-->
+                <div class="modal-header">
+                  <p class="heading lead">Categories</p>
+            
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="white-text">&times;</span>
+                  </button>
+                </div>
+            
+                <!--Body-->
+                <div class="modal-body">
+                  <div class="text-center">
+            {% for cat in cats %}
+                      <a href="{{ cat.get_absolute_url }}"
+                       class="btn 
+                       {% cycle 'tempting-azure-gradient' 'near-moon-gradient' 'rare-wind-gradient' 'deep-blue-gradient' 'mean-fruit-gradient' 'heavy-rain-gradient' 'dusty-grass-gradient' 'rainy-ashville-gradient' 'winter-neva-gradient' 'frozen-dreams-gradient' 'sunny-morning-gradient' 'young-passion-gradient' 'juicy-peach-gradient' 'lady-lips-gradient' 'night-fade-gradient' 'spring-warmth-gradient' 'dusty-grass-gradient' 'amy-crisp-gradient' 'purple-gradient' 'aqua-gradient' 'blue-gradient' %}
+                        btn-md black-text">
+                       {{ cat.title }}</a>
+            {% endfor %}
+            </div>
+            </div>
+            <!--Footer-->
+            <div class="modal-footer justify-content-center">
+                    <a type="button" class="btn btn-outline-primary waves-effect" data-dismiss="modal">Close</a>
+                  </div>
+                </div>
+                <!--/.Content-->
+              </div>
+              </div>
+              <!-- Central Modal Medium Info-->
+            

@@ -1,0 +1,19 @@
+
+
+ <!-- Default form reply -->
+                <form method='POST' autocomplete="off"> {% csrf_token %}
+
+                  <!-- Comment -->
+                  <div class="form-group">
+                  
+                    	
+                      
+                      {{ comment_form }}
+
+                  </div>
+                  <div class="text-center mt-4">
+                    <input class="btn btn-info btn-md" type="submit" value="Post">
+                  </div>
+                </form>
+                <!-- Default form reply -->
+
