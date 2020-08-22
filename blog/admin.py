@@ -17,6 +17,8 @@ class PostAdmin(admin.ModelAdmin):
     search_fields = ('title', 'body')
     prepopulated_fields = {'slug': ('title',)}
     date_hierarchy = 'publish'
-    ordering = ['status', 'publish']
-    
+    ordering = ['status', '-publish']
+    class Media:
+        js = ('ckeditor/ckeditor-init.js','ckeditor/ckeditor/ckeditor.js','ckeditor/conf.js')
+
 admin.site.register(Post, PostAdmin)

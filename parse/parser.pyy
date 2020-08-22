@@ -1,0 +1,139 @@
+import feedparser
+
+try: 
+    from BeautifulSoup import BeautifulSoup
+except ImportError:
+    from bs4 import BeautifulSoup
+
+
+from urllib.request import Request, urlopen
+
+import re
+
+from django.db import models
+
+
+def get_feeds():
+	print("Parsing..")
+	NewsFeed = feedparser.parse("https://udemycoupon.learnviral.com/feed/?post_type=coupon")
+	return NewsFeed.entries
+
+def parse(link):
+	print("Get Url, image..")
+        while True:
+            try:
+	        fp = Request(link, headers={'User-Agent': 'Mozilla/5.0'})
+	    except Exception as inst:
+                print("Faile")
+            finally:
+
+                mybytes = urlopen(fp).read()
+
+	        parsed_html = BeautifulSoup(mybytes.decode("utf8"),
+		features="html5lib")
+	        udemy = parsed_html.body.find('div', attrs={'class':'link-holder'}).contents[1]
+	        udemy_img_code = parsed_html.body.find('div',attrs={'class':'store-holder'})
+
+	        udemy_url = re.search("(?P<url>https?://[^\s]+)",str(udemy)).group("url")
+	        udemy_img = re.search("(?P<url>https?://[^\s]+.jpg|.png|.jpeg|.svg)",str(udemy_img_code)).group("url")
+	        return (udemy_url,udemy_img)
+
+def get_posts():
+	feeds = get_feeds()
+	posts = []
+	print("Add feeds to dict...")
+	for feed in feeds:
+		link , image= parse(feed.link)
+		slug = str(feed.title.replace('[Free] ','')).replace(' ', '-').lower()
+		if slug.startswith('the-'):
+			slug = slug[4:]
+
+		slug = ''.join(e for e in slug if e.isalnum() or e == '-')
+		body = feed.summary
+		body = re.sub('<a.*?</a>', '', body)
+		body = re.sub(' Published by:.*?</p>', '', body)
+		body = re.sub('<p>For more:.*?</p>', '', body)
+
+		posts.append({
+			'title': str(feed.title).replace('[Free] ',''),
+			'body': body,
+			'link':  link[:-1],
+			'image': image,
+			'status': 'published',
+			'slug': slug
+			})
+	return posts
+
+
+
+from blog.models import Post
+import urllib.request
+
+import os
+from urllib.parse import urlparse
+from cms0.settings import MEDIA_URL, BASE_DIR
+
+def save_post(title,body,link,image,status,slug):
+	i = 0
+	img_name = os.path.basename(urlparse(image).path)
+	db_img = "posts/"+img_name
+	img_name = BASE_DIR+"/static_cdn"+MEDIA_URL+"posts/"+img_name
+	urllib.request.urlretrieve(image,img_name)
+	if not Post.objects.filter(title=title).exists():
+		i = 1
+		re = Post(title=title,
+			body=body,
+			link=link,
+			image=db_img,
+			status=status,
+			slug=slug)
+		re.save()
+	return i
+
+def start():
+	i=0
+	feeds = get_posts()
+	print("Saving posts...")
+	for post in feeds:
+		i+=save_post(**post)
+	print("Done! {} of {} posts".format(i,len(feeds)))
+
+start()
+
+
+
+
+"""
+{'title': '[$10] 70-740 MCSA Windows Server 2016 Certification exam Tests New', 
+'title_detail': {'type': 'text/plain', 'language': None, 'base': 'https://udemycoupon.learnviral.com/feed/?post_type=coupon', 
+'value': '[$10] 70-740 MCSA Windows Server 2016 Certification exam Tests New'}, 'links': [{'rel': 'alternate', 'type': 'text/html', 
+'href': 'https://udemycoupon.learnviral.com/coupon/70-740-mcsa-windows-server-2016-certification-exam-tests-new/'}], 'link':
+ 'https://udemycoupon.learnviral.com/coupon/70-740-mcsa-windows-server-2016-certification-exam-tests-new/', 'published': 
+ 'Sat, 02 May 2020 06:46:24 +0000', 'published_parsed': 
+ time.struct_time(tm_year=2020, tm_mon=5, tm_mday=2, tm_hour=6, tm_min=46, tm_sec=24, tm_wday=5, tm_yday=123, tm_isdst=0), 
+ 'authors': [{'name': 'Patrick'}], 'author': 'Patrick', 'author_detail': {'name': 'Patrick'}, 
+'id': 'https://udemycoupon.learnviral.com/?post_type=coupon&p=183322', 'guidislink': False, 'summary': 
+'<p><a rel="nofollow" href="https://udemycoupon.learnviral.com/coupon/70-740-mcsa-windows-server-2016-certification-exam-tests-new/">[$10] 70-740 MCSA Windows Server 2016 Certification exam Tests New</a></p>\n<p>May 02, 2020 // Questions: 136 // Pass your 70-740 MCSA Certification Exam in first attempt with this latest practice tests (New Updated questions ) Published by: Chandrika patel</p>\n<p>For more: <a rel="nofollow" href="https://udemycoupon.learnviral.com">Learn Viral</a>.</p>',
+ 'summary_detail': {'type': 'text/html', 'language': None, 'base': 'https://udemycoupon.learnviral.com/feed/?post_type=coupon', 'value': '<p><a rel="nofollow" href="https://udemycoupon.learnviral.com/coupon/70-740-mcsa-windows-server-2016-certification-exam-tests-new/">[$10] 70-740 MCSA Windows Server 2016 Certification exam Tests New</a></p>\n<p>May 02, 2020 // Questions: 136 // Pass your 70-740 MCSA Certification Exam in first attempt with this latest practice tests (New Updated questions ) Published by: Chandrika patel</p>\n<p>For more: <a rel="nofollow" href="https://udemycoupon.learnviral.com">Learn Viral</a>.</p>'}, 'content': [{'type': 'text/html', 'language': None, 'base': 'https://udemycoupon.learnviral.com/feed/?post_type=coupon', 'value': '<p><a rel="nofollow" href="https://udemycoupon.learnviral.com/coupon/70-740-mcsa-windows-server-2016-certification-exam-tests-new/">[$10] 70-740 MCSA Windows Server 2016 Certification exam Tests New</a></p>\n<p>May 02, 2020 // Questions: 136 //</p>\n<p>Pass your 70-740 MCSA Certification Exam in first attempt with this latest practice tests (New Updated questions ) </p>\n<p>Published by: Chandrika patel</p>\n<p>For more: <a rel="nofollow" href="https://udemycoupon.learnviral.com">Learn Viral</a>.</p>'}]}
+"""
+
+#print(start()[0])
+
+#print(len(NewsFeed.entries))
+#print(entry.keys())
+#print(entry.title)
+#print(entry.link)
+
+"""
+dict_keys(['title', 'title_detail', 'links', 'link', 'published', 'published_parsed',
+ 'authors', 'author', 'author_detail', 'id',
+  'guidislink', 'summary', 'summary_detail', 'content'])
+"""
+
+
+
+
+
+#print(udemy_img)
+
+

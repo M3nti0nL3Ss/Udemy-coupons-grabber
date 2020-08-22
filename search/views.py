@@ -3,10 +3,13 @@ from django.views.generic import ListView
 from blog.models import Post
 from cat.models import Category
 
+from client.views import get_client_infos
+
 class SearchPostView(ListView):
     template_name = "search.html"
-
+    paginate_by = 9
     def get_context_data(self, *args, **kwargs):
+        get_client_infos(self.request)
         context = super(SearchPostView, self).get_context_data(*args, **kwargs)
         query = self.request.GET.get('q')
         context['query'] = query

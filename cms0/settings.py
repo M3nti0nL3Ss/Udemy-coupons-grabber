@@ -37,7 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+   #sitemaps
+    'django.contrib.sites',
+    'django.contrib.sitemaps',
     #installed apps
+'taggit',
     #'ads',
     #My apps
     'blog',
@@ -45,7 +49,11 @@ INSTALLED_APPS = [
     'search',
     'comment',
     'parse',
+'client',
+'ckeditor',
 ]
+
+SITE_ID = 1
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -132,4 +140,9 @@ STATICFILES_DIRS = [
 STATIC_ROOT = os.path.join(BASE_DIR, "static_cdn")
 MEDIA_ROOT = os.path.join(STATIC_ROOT, "media")
 MEDIA_URL= '/media/'
+
+try:
+    from .local_settings import *
+except ImportError:
+    print("Looks like no local file. You must be on production")
 

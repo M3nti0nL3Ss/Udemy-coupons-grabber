@@ -1,0 +1,5 @@
+#!/bin/bash
+source /home/m3nti0nl3ss/project/env/bin/activate
+/home/m3nti0nl3ss/project/manage.py shell < /home/m3nti0nl3ss/project/script.py
+/home/m3nti0nl3ss/project/manage.py shell < /home/m3nti0nl3ss/project/sort.py
+deactivate

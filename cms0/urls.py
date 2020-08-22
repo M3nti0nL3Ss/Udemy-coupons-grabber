@@ -21,6 +21,13 @@ from blog.views import HomePageView, PostDetail
 from cat.views import CategoryList, CategoryDetail
 from search.views import SearchPostView
 
+from django.contrib.sitemaps.views import sitemap
+from .sitemaps import PostSitemap
+
+sitemaps = {
+    'posts': PostSitemap,
+}
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,6 +35,7 @@ urlpatterns = [
     path('post/<year>/<month>/<slug>', PostDetail.as_view()),
     path('cat/<slug>', CategoryDetail.as_view()),
     path('search/', SearchPostView.as_view(), name='query'),
+path('sitemap.xml',sitemap, {'sitemaps':sitemaps}),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

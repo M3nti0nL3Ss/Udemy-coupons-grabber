@@ -1,3 +1,8 @@
+
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
  <!--Section: Jumbotron-->
  <section class="card wow fadeIn">
 
@@ -20,3 +25,12 @@
     </div>
     <!-- Content -->
   </section>
+
+            
+{% endblock content %}
+
+{% block modal %}
+
+{% include "cat.html" %}
+            
+{% endblock modal %}
