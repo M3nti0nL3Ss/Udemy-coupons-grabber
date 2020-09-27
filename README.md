@@ -29,5 +29,3 @@ By
     image = models.ImageField(upload_to=upload_image_path)
     author = models.ForeignKey(User, related_name='blog_posts', on_delete=models.CASCADE)
 ```
-
-DEMO: https://www.th3md.com
