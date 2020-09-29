@@ -1,0 +1,3 @@
+[submodule "static_cdn/ckeditor4"]
+	path = static_cdn/ckeditor4
+	url = https://github.com/ckeditor/ckeditor4.git

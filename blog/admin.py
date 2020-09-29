@@ -19,6 +19,6 @@ class PostAdmin(admin.ModelAdmin):
     date_hierarchy = 'publish'
     ordering = ['status', '-publish']
     class Media:
-        js = ('ckeditor/ckeditor-init.js','ckeditor/ckeditor/ckeditor.js','ckeditor/conf.js')
+        js = ('ckeditor4/ckeditor-init.js','ckeditor4/ckeditor/ckeditor.js','ckeditor/conf.js')
 
 admin.site.register(Post, PostAdmin)
